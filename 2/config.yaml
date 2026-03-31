@@ -1,0 +1,16 @@
+app:
+  name: "MojaAplikacja"
+  debug: true
+
+server:
+  host: "127.0.0.1"
+  port: 8080
+  timeout: 30
+
+database:
+  credentials:
+    user: "admin"
+    password: "secret"
+  settings:
+    pool_size: 5
+    retry: true
