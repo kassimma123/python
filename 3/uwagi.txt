@@ -1,0 +1,14 @@
+# Zadanie podstawowe - OK
+# Zadanie średnio-zaawansowane - OK
+# Zadanie trudne - OK
+# Zadanie dodatkowe - OK
+# Dodatkowe komentarze:
+
+## Proszę rzucić okiem na wykorzystanie globalnej zmiennej `__main__` w pisaniu skryptów - w aktualnej postaci próba zaimportowania funkcji do innego pliku zakończy się wywołaniem skryptu. https://realpython.com/python-main-function/
+## Zamiast struktur `if-elif-...-elif-else` można użyć `match-case` bądź zastanowić się nad zastosowaniem `StrEnum` (uzyskujemy wtedy stałą, zdefiniowaną listę wszystkich opcji).
+## Przy printowaniu, zamiast liczyć spacje w stringu można użyć tabulacji `\t`.
+## Bardzo dobre zastosowanie rozpakowania słownika przy pomocy `**`.
+## Podział pliku na pomniejsze funkcje (funkcja-sekcja) poprawi czytelność (a wprowadzając type hints, zwiększy się też zrozumienie co jest przetwarzane).
+## Wielka szkoda, że podana ścieżka do konfiguracji jest zhardkowana. Nie bez powodu wprowadzaliśmy argparse na poprzednich temacie. Proszę się nie martwić i kopiować boilerplate związany z argparse - funkcjonalność ta jest bardzo przydatna!
+
+# Gratuluje, bardzo dobre rozwiązanie!
