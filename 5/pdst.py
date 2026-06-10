@@ -1,4 +1,6 @@
 from dataclasses import dataclass, fields
+import yaml
+from pathlib import Path
 
 class BaseConfigSection: #pusta klasa bazowa
     pass
@@ -100,5 +102,36 @@ if __name__ == "__main__":
     db = DatabaseConfig(db_name="produkcja_db", user = "admin")
     db.validate()
     db.display()
+
+    #plik yaml
+    current_dir = Path(__file__).parent
+    config_path = current_dir / "config.yaml"
+
+    try:
+        with open(config_path, "r", encoding="utf-8") as file:
+            config_data = yaml.safe_load(file)
+    except FileNotFoundError:
+        print(f"Nie znaleziono pliku config.yaml w ścieżce: {config_path}")
+        exit(1)
+    print(f"wczytane dane z pliku yaml: {config_path}")
+    print(config_data)
+    print("-"*30)
+
+    app = AppConfig(**config_data["app"]) # config_data["app"] to słownik: {'name': 'MojaAplikacja', 'debug': True}
+    app.validate()
+    app.display()
+
+    server = ServerConfig(**config_data['server'])
+    server.validate()
+    server.display()
+    
+    db = DatabaseConfig(**config_data['database'])
+    db.validate()
+    db.display()
+    
+
+
+
+
     
     

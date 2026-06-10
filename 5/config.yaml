@@ -1,0 +1,10 @@
+app:
+  name: MojaAplikacja
+  debug: true
+server:
+  host: 127.0.0.1
+  port: 8080
+  timeout: 30
+database:
+  db_name: moja_baza
+  user: admin
