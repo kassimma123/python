@@ -1,7 +1,8 @@
 from dataclasses import dataclass, fields
 from abc import ABC, abstractmethod
 
-#interfejs
+
+# interfejs
 class BaseConfigSection(ABC):
     @abstractmethod
     def validate(self) -> None:
@@ -11,7 +12,8 @@ class BaseConfigSection(ABC):
     def display(self) -> None:
         pass
 
-#dynamiczna fabryka
+
+# dynamiczna fabryka
 class ConfigFactory:
     _registry = {}
 
@@ -25,11 +27,11 @@ class ConfigFactory:
         """tworzy obiekt szukajac odpowiedniej klasy w rejestrze"""
         if section_name not in cls._registry:
             raise ValueError(f"Nie ma zdefiniowanej konfiguracji dla: {section_name}")
-        
+
         return cls._registry[section_name](**data)
 
 
-#konfiguracja aplikacji
+# konfiguracja aplikacji
 @dataclass(slots=True, frozen=True)
 class AppConfig(BaseConfigSection):
     name: str
@@ -45,24 +47,26 @@ class AppConfig(BaseConfigSection):
             raise ValueError("Pole name nie może być puste")
         if len(self.name) < 3:
             raise ValueError("Pole name musi mieć co najmniej 3 znaki")
-        if not self.name.isalpha():
-            raise ValueError("Pole musi sie skladac z samych liter ")
+        if not self.name.replace(" ", "").isalpha():
+            raise ValueError(
+                "Pole name musi składać się z liter (może zawierać spacje)"
+            )
 
     def __str__(self) -> str:
         return ", ".join(
-            f"{field.name}={getattr(self, field.name)!r}"
-            for field in fields(self)
+            f"{field.name}={getattr(self, field.name)!r}" for field in fields(self)
         )
-    
+
     def display(self) -> None:
         print(f"AppConfig: {str(self)}")
 
-#konfiguracja serwera
+
+# konfiguracja serwera
 @dataclass(slots=True, frozen=True)
 class ServerConfig(BaseConfigSection):
     host: str
     port: int
-    timeout: int 
+    timeout: int
 
     def validate(self) -> None:
         if not isinstance(self.host, str):
@@ -81,14 +85,14 @@ class ServerConfig(BaseConfigSection):
 
     def __str__(self) -> str:
         return ", ".join(
-            f"{field.name}={getattr(self, field.name)!r}"
-            for field in fields(self)
+            f"{field.name}={getattr(self, field.name)!r}" for field in fields(self)
         )
-    
+
     def display(self) -> None:
         print(f"ServerConfig: {str(self)}")
 
-#konfiguracja bazy danych
+
+# konfiguracja bazy danych
 @dataclass(slots=True, frozen=True)
 class DatabaseConfig(BaseConfigSection):
     db_name: str
@@ -107,14 +111,14 @@ class DatabaseConfig(BaseConfigSection):
 
     def __str__(self) -> str:
         return ", ".join(
-            f"{field.name}={getattr(self, field.name)!r}"
-            for field in fields(self)
+            f"{field.name}={getattr(self, field.name)!r}" for field in fields(self)
         )
-    
+
     def display(self) -> None:
         print(f"DatabaseConfig: {str(self)}")
-    
-#nowa sekcja
+
+
+# nowa sekcja
 @dataclass(slots=True, frozen=True)
 class LoggingConfig(BaseConfigSection):
     level: str
@@ -126,14 +130,14 @@ class LoggingConfig(BaseConfigSection):
 
     def __str__(self) -> str:
         return ", ".join(
-            f"{field.name}={getattr(self, field.name)!r}"
-            for field in fields(self)
+            f"{field.name}={getattr(self, field.name)!r}" for field in fields(self)
         )
-    
+
     def display(self) -> None:
         print(f"LoggingConfig: {str(self)}")
 
-#klasa zbiorcza
+
+# klasa zbiorcza
 @dataclass(slots=True, frozen=False)
 class ApplicationConfig:
     sections: dict[str, BaseConfigSection]
@@ -143,31 +147,31 @@ class ApplicationConfig:
         for section in self.sections.values():
             section.validate()
         print("walidacja zakonczona sukcesem")
-    
+
     def display_all(self) -> None:
         print("\n---pełna konfiguracja aplikacji---")
         for name, section in self.sections.items():
             print(f"[{name.upper()}]")
             section.display()
 
-#główny program
+
+# główny program
 if __name__ == "__main__":
-    
     ConfigFactory.register("app", AppConfig)
     ConfigFactory.register("server", ServerConfig)
     ConfigFactory.register("database", DatabaseConfig)
     ConfigFactory.register("logging", LoggingConfig)
 
     config_data = {
-        'app': {'name': 'MojaAplikacja', 'debug': True}, 
-        'server': {'host': '127.0.0.1', 'port': 8080, 'timeout': 30}, 
-        'database': {'db_name': 'moja_baza', 'user': 'admin'},
-        'logging': {'level': 'INFO', 'file': '/var/log/app.log'} #nowe
+        "app": {"name": "MojaAplikacja", "debug": True},
+        "server": {"host": "127.0.0.1", "port": 8080, "timeout": 30},
+        "database": {"db_name": "moja_baza", "user": "admin"},
+        "logging": {"level": "INFO", "file": "/var/log/app.log"},  # nowe
     }
 
     parsed_sections = {}
     for section_name, section_data in config_data.items():
-        obj =  ConfigFactory.create_section(section_name, section_data)
+        obj = ConfigFactory.create_section(section_name, section_data)
         parsed_sections[section_name] = obj
 
     app_config = ApplicationConfig(sections=parsed_sections)
